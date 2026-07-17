@@ -1,85 +1,71 @@
 # Training Configuration
 
-## Dataset
+## Qwen LoRA
 
-Training Samples: 2000
+Base Model
 
-Validation Samples: 200
+- Qwen/Qwen2.5-7B-Instruct
 
-Test Samples: 500
+Quantization
 
-Evaluation Metric:
-
-MAP@3
-
----
-
-## Base Model
-
-Qwen2.5-3B-Instruct
-
----
-
-## Fine-Tuning
-
-Method:
+- 4-bit NF4
 
 LoRA
 
-Precision:
+- Rank : 16
+- Alpha : 32
+- Dropout : 0.05
 
-4-bit Quantization
+Target Modules
 
-Trainer:
+- q_proj
+- k_proj
+- v_proj
+- o_proj
+- gate_proj
+- up_proj
+- down_proj
 
-TRL SFTTrainer
+Epochs
 
----
+- 2
 
-## Hyperparameters
+Optimizer
 
-Epochs:
+- paged_adamw_8bit
 
-2
+Learning Rate
 
-Learning Rate:
-
-2e-4
-
-Optimizer:
-
-PagedAdamW8bit
-
-Batch Size:
-
-1
-
-Gradient Accumulation:
-
-4
-
-Maximum Sequence Length:
-
-1024
-
-Warmup Steps:
-
-5
+- 2e-4
 
 ---
 
-## Checkpoints
+## BiLSTM
 
-checkpoint-225
+Embedding Size
 
-checkpoint-450
+- 200
 
-Final Model:
+Hidden Size
 
-checkpoint-450
+- 256
 
----
+Layers
 
-## Final Leaderboard Score
+- 1
 
-0.73316
+Dropout
+
+- 0.4
+
+Optimizer
+
+- Adam
+
+Loss
+
+- CrossEntropyLoss
+
+Epochs
+
+- 10
