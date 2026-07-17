@@ -1,49 +1,49 @@
-# Experiment Log
-
-| Run | Experiment | MAP@3 |
-|------|-----------|-------|
-| 1 | Initial LoRA + First Token Logits | 0.62427 |
-| 2 | Generation-based Inference | 0.72402 |
-| 3 | Beam Search + Prompt Ranking | **0.73316** |
-
----
+# Experiment Timeline
 
 ## Experiment 1
 
-Inference
+CrossEncoder MS-MARCO
 
-First token logits
+Public MAP@3
 
-Observation
-
-Model learned useful reasoning but inference strategy limited performance.
+0.44887
 
 ---
 
 ## Experiment 2
 
-Generation based decoding
+Qwen2.5 LoRA
 
-Improvement
+Beam Search
 
-+0.09975 MAP
+Public MAP@3
+
+0.73607
 
 ---
 
 ## Experiment 3
 
-Beam Search
+BiLSTM
 
-Prompt Ranking
+Built From Scratch
 
-Beam Re-ranking
+Public MAP@3
 
-Improvement
-
-+0.00914 MAP
+0.74023
 
 ---
 
-Current Best Score
+## Experiment 4
 
-0.73316
+Qwen2.5 LoRA
+
+Optimized Inference
+
+- Logit Scoring
+- Circular Permutations
+- Temperature Calibration
+
+Public MAP@3
+
+0.75519
