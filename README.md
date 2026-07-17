@@ -1,142 +1,176 @@
-# DL-GENAI-PROJECT
-# Smart MCQ Solver Challenge
+# DL-GenAI Project
+## Smart MCQ Solver Challenge
 
-Name: Mrinal Pandey
-Roll No: 23f2000333
-
-## Overview
-
-This repository contains my solution for the Kaggle **Smart MCQ Solver Challenge**, where the objective is to predict the **Top-3 most likely answers** for multiple-choice questions using Large Language Models and parameter-efficient fine-tuning.
-
-The competition is evaluated using **Mean Average Precision @ 3 (MAP@3)**.
+**Name:** Mrinal Pandey  
+**Roll Number:** 23f2000333
 
 ---
 
-## Competition
+## Project Overview
 
-- Dataset: Smart MCQ Solver Challenge
-- Training Samples: 2,000
-- Test Samples: 500
-- Evaluation Metric: MAP@3
+This repository contains my submission for the **Smart MCQ Solver Challenge** as part of the **Deep Learning for Generative AI** course.
 
-Each question contains:
+The objective of the competition is to predict the **top three most likely answers** for multiple-choice questions containing a prompt and five answer options (A–E).
 
-- Prompt
-- Five options (A-E)
-
-The objective is to rank the three most probable answers.
+Model performance is evaluated using **Mean Average Precision at 3 (MAP@3)**.
 
 ---
 
-# Model
+## Dataset
 
-Base Model
+- **Training Samples:** 2,000
+- **Test Samples:** 500
+- **Answer Choices:** A, B, C, D, E
+- **Evaluation Metric:** MAP@3
 
-- Qwen2.5-3B-Instruct
+Each sample consists of:
 
-Fine Tuning
+- Question Prompt
+- Five Candidate Answers
+- Correct Answer (Training Set)
+
+The task is to rank the three most probable answer choices for every question.
+
+---
+
+## Repository Structure
+
+```
+DLGenAI-IITM/
+│
+├── docs/
+├── notebooks/
+├── checkpoints/
+├── submissions/
+├── README.md
+├── requirements.txt
+└── .gitignore
+```
+
+---
+
+## Models Implemented
+
+### 1. BiLSTM (Built From Scratch)
+
+A Bidirectional LSTM model implemented entirely in PyTorch using a custom vocabulary and embedding layer.
+
+**Architecture**
+
+```
+Embedding
+    ↓
+BiLSTM
+    ↓
+Dropout
+    ↓
+Linear Layer
+    ↓
+Softmax
+```
+
+**Public MAP@3:** **0.74023**
+
+---
+
+### 2. CrossEncoder (Pretrained Model)
+
+Model Used:
+
+```
+cross-encoder/ms-marco-MiniLM-L-6-v2
+```
+
+The model scores each question-answer pair independently and ranks the answer options according to their relevance.
+
+**Public MAP@3:** **0.44887**
+
+---
+
+### 3. Qwen2.5 LoRA (Fine-Tuned LLM)
+
+Base Model:
+
+```
+Qwen2.5-7B-Instruct
+```
+
+Fine-tuning Method:
 
 - LoRA
 - 4-bit Quantization (QLoRA)
-- HuggingFace TRL SFTTrainer
+- Hugging Face TRL SFTTrainer
+
+The inference pipeline was improved over multiple experiments using prompt engineering and logit-based ranking strategies.
+
+**Best Public MAP@3:** **0.75519**
 
 ---
 
-# Training Configuration
+## Training Configuration
+
+### Qwen LoRA
 
 | Parameter | Value |
-|-----------|------|
-| Model | Qwen2.5-3B-Instruct |
+|-----------|-------|
+| Base Model | Qwen2.5-7B-Instruct |
 | Fine-tuning | LoRA |
-| Precision | 4-bit |
+| Quantization | 4-bit QLoRA |
 | Epochs | 2 |
 | Learning Rate | 2e-4 |
 | Optimizer | PagedAdamW8bit |
 
 ---
 
-# Inference Pipeline
+### BiLSTM
 
-The inference pipeline evolved over multiple experiments.
-
-## Version 1
-
-- First-token logits
-- Softmax over A-E
-
-Leaderboard Score
-
-**0.62427**
+| Parameter | Value |
+|-----------|-------|
+| Embedding Dimension | 200 |
+| Hidden Dimension | 256 |
+| Layers | 1 |
+| Dropout | 0.4 |
+| Optimizer | Adam |
+| Loss Function | CrossEntropyLoss |
 
 ---
 
-## Version 2
+## Experimental Progress
 
-Generation-based inference
-
-Prompt engineering with deterministic decoding.
-
-Leaderboard Score
-
-**0.72402**
-
----
-
-## Version 3
-
-Beam Search + Prompt Ranking
-
-Improvements
-
-- Beam Search
-- Prompt Optimization
-- Ranked option generation
-- Beam reranking
-
-Leaderboard Score
-
-**0.73316**
+| Experiment | Public MAP@3 |
+|------------|-------------:|
+| Qwen LoRA (Initial Logit Scoring) | 0.62427 |
+| Qwen LoRA (Generation-Based Inference) | 0.72402 |
+| Qwen LoRA (Beam Search) | 0.73316 |
+| BiLSTM (Built From Scratch) | 0.74023 |
+| Qwen LoRA (Final Optimized Pipeline) | **0.75519** |
 
 ---
 
-# Repository Structure
+## Contents
 
-```
-smart-mcq-solver/
+The repository includes:
 
-checkpoints/
-docs/
-notebooks/
-submissions/
-
-README.md
-requirements.txt
-.gitignore
-```
+- Milestone notebooks
+- Model implementation notebooks
+- Experiment notebooks
+- Training checkpoints
+- Submission files
+- Project documentation
 
 ---
 
-# Results
+## Technologies Used
 
-| Method | Public MAP@3 |
-|---------|-------------|
-| Initial LoRA | 0.62427 |
-| Generation Inference | 0.72402 |
-| Beam Search + Ranking | **0.73316** |
-
----
-
-# Future Work
-
-- Retrieval-Augmented Generation (RAG)
-- Cross-Encoder Re-ranking
-- DistilBERT Baseline
-- Ensemble Models
-- Prompt Ensembling
-- Self-consistency decoding
+- Python
+- PyTorch
+- Hugging Face Transformers
+- PEFT (LoRA)
+- TRL
+- Sentence Transformers
+- Scikit-learn
+- Pandas
+- NumPy
+- Weights & Biases (W&B)
 
 ---
-
-# Author
-
-Mrinal Pandey
